@@ -1,6 +1,7 @@
 # Personal data
 /corrs.db
 /link_to_stations.py
+/RT-master.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
