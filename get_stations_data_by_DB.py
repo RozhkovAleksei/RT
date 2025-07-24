@@ -2,12 +2,12 @@ import requests
 from pandas import concat
 from link_to_stations import url_to_stations_bd
 from tqdm import tqdm
+from loguru import logger
 
 # Блок для добавления территориальной информации про станции
 # На вход приходит датафрейм с кодами ЕСР станций, на выходе список ЕСР кодов
-# Цель - из всего массива станций отправления и назначения собрать только уникальные станции
-
-def GetActualStationsDataCheckValidDataAndGetPreferences(dataframe):
+@logger.catch(reraise=True)
+def GetAdditionalDataAboutStations(dataframe):
 
     # Создается датафрейм с отдельными столбцами из исходного файла.
     # Оставляются ЕСР станции отправления и наименование станции отправления
@@ -65,7 +65,7 @@ def GetActualStationsDataCheckValidDataAndGetPreferences(dataframe):
 
                 # Если код ЕСР станции из df_3 равен коду станции в общем списке станций - добавляем в
                 # список нужную информацию по этой станции. ЕСР без последнего знака, т.к. его на сервере нет
-                if str(df_3.loc[j][0])[:-1] == v[i]['stan_esr']:
+                if df_3.loc[j][0][:-1] == v[i]['stan_esr']:
 
                     stations_data.append(
                         [
@@ -80,6 +80,8 @@ def GetActualStationsDataCheckValidDataAndGetPreferences(dataframe):
     stations_data.sort(key=lambda x: x[0])
 
     del df_3
+    del st_data
+    del st_dict
 
     return stations_data
 

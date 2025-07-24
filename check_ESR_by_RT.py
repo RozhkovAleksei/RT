@@ -1,26 +1,26 @@
 from win32gui import FindWindow
-from pandas import read_excel, concat
+from pandas import concat
 from globals import SetRailTariffWindowActive, SetRailTariffWindowActiveForInput
 from pyautogui import hotkey, press, typewrite, keyUp, keyDown
 from time import sleep
 from py_win_keyboard_layout import change_foreground_window_keyboard_layout
 from keyboard import write
 from tqdm import tqdm
+from loguru import logger
+from externals import sleep_moment, sleep_tic, sleep_long
 
 # Блок для проверки кода станции ЕСР на валидность.
 # Запускается отдельно, но можно интегрировать первым шагом, чтобы остановить выполнения расчётов, либо исключить
 # корреспонденции, по которым есть проблема с валидностью ЕСР (отправление / назначение).
 # Проверка выполняется путём ввода кода станции в окно R-Тарифа, т.е., фактически - найдёт ли он её.
 
-# def RunCheck(source_file, sheet_name):
+@logger.catch(reraise=True)
 def RunCheck(df):
-    # Перегоняется в dataframe файл с корреспонденциями
-    # df = read_excel(source_file, sheet_name=sheet_name, index_col= False, dtype=str)
 
     # Создается датафрейм с выделенными столбцами из исходного файла. Столбцы с датой также нужны для объединения.
     df_1 = df[['esr_otpr', 'year_for_tariff', 'month_for_tariff', 'day_for_tariff']]
     # Создается второй датафрейм с выделенными столбцами из исходного файла. Столбцы с датой также нужны для объединения.
-    # ОТличие от первого в том, что в первом - станция отправления, во втором - станция назначения.
+    # Отличие от первого в том, что в первом - станция отправления, во втором - станция назначения.
     df_2 = df[['esr_nazn', 'year_for_tariff', 'month_for_tariff', 'day_for_tariff']]
     # Переименовывается название столбца, чтобы при объединении данные слились в один столбец.
     df_2 = df_2.rename(columns={'esr_nazn': 'esr_otpr'})
@@ -28,59 +28,63 @@ def RunCheck(df):
     df_3 = concat([df_1, df_2], ignore_index=True, axis=0)
     # Убираются полные дубликаты полученных строк, по которым совпадает: ЕСР и дата расчёта.
     # Итого должен остаться датафрейм с уникальной связкой: ЕСР+дата расчёта Важно, потому что в другие даты расчёта
-    # невалидный сегодня ЕСР может быть валидным!
+    # невалидный ЕСР может быть валидным!
     df_3 = df_3.drop_duplicates(ignore_index=True)
 
-    # Сделан SET чтобы дубли сами удалялись
+    # Выбран SET чтобы дубли сами удалялись при наполнении
     problem_ESR = {}
 
     for i in tqdm(range(0, df_3.shape[0])):
+
+        # Активируется окно RT
+        SetRailTariffWindowActive()
 
         # Переключается раскладка на английскую независимо от текущей, нужно для корректного ввода с клавиатуры
         # и чтобы не искать какая сейчас стоит раскладка.
         change_foreground_window_keyboard_layout(0x04090409)
 
-        # Активируется окно RT
-        SetRailTariffWindowActive()
+        sleep(sleep_moment)
 
         keyDown('ctrl')
         keyDown('n')
         keyUp('n')
         keyUp('ctrl')
 
+        sleep(sleep_moment)
+
         # Установление курсора для установки даты для расчёта в активное окно RT.
         hotkey('ctrl', 'd')
-        sleep(0.2)
-        write(str(df_3['day_for_tariff'][i]), delay=0.01)
-        sleep(0.2)
-        write(str(df_3['month_for_tariff'][i]), delay=0.01)
-        sleep(0.2)
-        write(str(df_3['year_for_tariff'][i]), delay=0.01)
-        sleep(0.2)
+        sleep(sleep_moment)
+        write(df_3['day_for_tariff'][i], delay=0.01)
+        sleep(sleep_moment)
+        write(df_3['month_for_tariff'][i], delay=0.01)
+        sleep(sleep_moment)
+        write(df_3['year_for_tariff'][i], delay=0.01)
+        sleep(sleep_moment)
         press('enter')
-        sleep(0.1)
+        sleep(sleep_tic)
         # Вызывается окно для ввода кода станции
         SetRailTariffWindowActiveForInput(1)
-        sleep(0.5)
-        typewrite(str(df_3['esr_otpr'][i]))
-        sleep(0.5)
+        sleep(sleep_long)
+        typewrite(df_3['esr_otpr'][i])
+        sleep(sleep_long)
         press('enter')
-        sleep(0.3)
+        sleep(sleep_long)
         # После ввода кода станции ищется ID окна для ввода кода станции.
-        # Логика такова, что если окно ещё существует (ID не равен 0) - значит код ЕСР неправильный!
-        wnd = FindWindow(None, "station_otpr_name")
+        # Логика такова, что если окно ещё существует (ID не равен 0) - значит код ЕСР неправильный
+        # так как после нажатия 'enter' окно не пропало.
+        # Здесь "Станция отправления" это заголовок всплывающего в RT окна.
+        wnd = FindWindow(None, "Станция отправления")
         if wnd != 0:
-            print("Проблема со станцией: ", df_3['esr_otpr'][i])
+            # print("Проблема со станцией: ", df_3['esr_otpr'][i])
             # Добавляем в словарь код станции и дату расчёта, которые нужно исключить из перечня.
             problem_ESR[df_3['esr_otpr'][i]] = df_3['year_for_tariff'][i]
             press('esc')
-            sleep(0.2)
+            sleep(sleep_moment)
 
-        sleep(0.5)
+        sleep(sleep_long)
 
-    # Преобразован в список для удобства в дальнейшем
-    problem_ESR_lst = list(problem_ESR)
-
-    # МЫ ПОТЕРЯЛИ ДАТУ ПЛОХОГО ЕСР!!! НАДО ВСЁ ПЕРЕДЕЛЫВАТЬ!
+    # Преобразован в список списков для удобства в дальнейшем
+    problem_ESR_lst = [[key, value] for key, value in problem_ESR.items()]
 
     return problem_ESR_lst

@@ -1,5 +1,11 @@
 table_name = "corrs_and_data"
 db_filename = "corrs.db"
 sheet_name = "data"
+path_to_img_data = ''
+sleep_long: float = 0.5
+sleep_short: float = 0.3
+sleep_moment: float = 0.2
+sleep_tic: float = 0.1
+min_search_time: float = 0.0
 end_path_to_folder_for_detailed_data = ':/proverka/details/'
 end_path_to_source_file = ':/proverka/zdp2.xlsx'

@@ -2,33 +2,35 @@ import keyboard
 from time import sleep
 import py_win_keyboard_layout
 import pandas as pd
-import globals
+import globals as gl
+from externals import sleep_short
+from loguru import logger
 
-
-def GetResultsToClipboard(mobj):
+@logger.catch(reraise=True)
+def get_results_to_clipboard_and_fill_object(mobj):
 
     # Переключение раскладки на английскую независимо от текущей, нужно для ввода с клавиатуры
     py_win_keyboard_layout.change_foreground_window_keyboard_layout(0x04090409)
 
     # Переключение на окно с RT
-    globals.SetRailTariffWindowActive()
-    sleep(mobj.global_sleep_short)
+    gl.SetRailTariffWindowActive()
+
+    sleep(sleep_short)
 
     # Горячие клавиши окна RT - копирование таблицы результатов расчётов
-    # pag.hotkey('ctrl', 't')
     keyboard.press("ctrl")
     keyboard.press("t")
     keyboard.release("t")
     keyboard.release("ctrl")
 
-    sleep(mobj.global_sleep_short)
+    sleep(sleep_short)
 
     # Считывание и очищение буфера обмена - вставка в новый dataframe
     df_tmp = pd.read_clipboard(dtype=str)
-    sleep(mobj.global_sleep_short)
+    sleep(sleep_short)
 
     df_tmp.rename(columns={" ": "Напр."}, inplace=True)
-    sleep(mobj.global_sleep_short)
+    sleep(sleep_short)
 
     # print(df_tmp)
 
@@ -90,7 +92,5 @@ def GetResultsToClipboard(mobj):
             mobj.zhdn_payment_by_empty_carriage = row['Пров. пл.']
             mobj.zhdn_payment_distance = row['Расст., км']
 
-    # mobj.print_attrs()
-
-    sleep(mobj.global_sleep_short)
+    sleep(sleep_short)
 
