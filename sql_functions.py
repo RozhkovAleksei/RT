@@ -2,7 +2,6 @@ import sqlite3
 import os
 import pandas as pd
 from loguru import logger
-from time import sleep
 
 
 @logger.catch(reraise=True)
@@ -109,21 +108,13 @@ def create_table_if_not_exist_and_check_for_duplicates(dataframe:pd.DataFrame, d
         except sqlite3.Error as exp:
             print("Ошибка получения данных для проверки на наличие среди имеющихся: ", exp)
 
-        # print("index_of_duplicate ", index_of_duplicate)
-
         # -1, так как 0 может оказаться валидным значением
         if index_of_duplicate is None:
             continue
         if index_of_duplicate[0] != -1:
             df_indexes_of_duplicates.append(i[0])
 
-    # print(df_indexes_of_duplicates)
-
-    # print("dataframe!!!", dataframe)
-
     df_clear = dataframe.drop(index=df_indexes_of_duplicates)
-
-    # print("clear df !!!", df_clear)
 
     return df_clear
 

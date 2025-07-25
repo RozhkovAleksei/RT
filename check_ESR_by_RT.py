@@ -15,7 +15,7 @@ from externals import sleep_moment, sleep_tic, sleep_long
 # Проверка выполняется путём ввода кода станции в окно R-Тарифа, т.е., фактически - найдёт ли он её.
 
 @logger.catch(reraise=True)
-def RunCheck(df):
+def run_check(df):
 
     # Создается датафрейм с выделенными столбцами из исходного файла. Столбцы с датой также нужны для объединения.
     df_1 = df[['esr_otpr', 'year_for_tariff', 'month_for_tariff', 'day_for_tariff']]
@@ -32,7 +32,7 @@ def RunCheck(df):
     df_3 = df_3.drop_duplicates(ignore_index=True)
 
     # Выбран SET чтобы дубли сами удалялись при наполнении
-    problem_ESR = {}
+    problem_esr = {}
 
     for i in tqdm(range(0, df_3.shape[0])):
 
@@ -78,13 +78,13 @@ def RunCheck(df):
         if wnd != 0:
             # print("Проблема со станцией: ", df_3['esr_otpr'][i])
             # Добавляем в словарь код станции и дату расчёта, которые нужно исключить из перечня.
-            problem_ESR[df_3['esr_otpr'][i]] = df_3['year_for_tariff'][i]
+            problem_esr[df_3['esr_otpr'][i]] = df_3['year_for_tariff'][i]
             press('esc')
             sleep(sleep_moment)
 
         sleep(sleep_long)
 
     # Преобразован в список списков для удобства в дальнейшем
-    problem_ESR_lst = [[key, value] for key, value in problem_ESR.items()]
+    problem_esr_lst = [[key, value] for key, value in problem_esr.items()]
 
-    return problem_ESR_lst
+    return problem_esr_lst

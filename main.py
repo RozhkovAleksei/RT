@@ -81,14 +81,14 @@ def main():
         del df
 
         # Если новые данные есть, то перед основным блоком выполняется проверка ЕСР на валидность, невалидные в список
-        ESR_to_exclude = cesr_rt.RunCheck(cleared_df)
+        esr_to_exclude = cesr_rt.run_check(cleared_df)
         # ESR_to_exclude = [['200303', '2025']]
-        print("Проблемные пары ЕСР - год ", ESR_to_exclude)
+        print("Проблемные пары ЕСР - год ", esr_to_exclude)
 
         # Если список не пустой - нужно удалить из датафрейма строки, в которых есть невалидные ЕСР
-        if len(ESR_to_exclude) != 0:
+        if len(esr_to_exclude) != 0:
 
-            for i in ESR_to_exclude:
+            for i in esr_to_exclude:
                 # print("Текущая рассматриваемая станция и год из невалидных ЕСР: ", i[0], i[1])
                 for j in cleared_df.itertuples():
                     if (i[0] == j[1] and i[1] == j[13]) or (i[0] == j[3] and i[1] == j[13]):
