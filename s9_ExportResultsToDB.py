@@ -2,7 +2,7 @@ import sqlite3
 from loguru import logger
 
 @logger.catch(reraise=True)
-def write_corr_result_to_db(mo, db_filename, table_name):
+async def write_corr_result_to_db(mo, db_filename, table_name):
 
     with sqlite3.connect(db_filename) as connection:
 

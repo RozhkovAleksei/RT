@@ -20,10 +20,12 @@ import pandas as pd
 import sys
 from datetime import datetime
 from loguru import logger
+import asyncio
+
 from globals import SetDiskLabelByScreenRes
 from sql_functions import create_table_if_not_exist_and_check_for_duplicates
 from externals import end_path_to_source_file, end_path_to_folder_for_detailed_data, db_filename, table_name, sheet_name
-import get_stations_data_by_DB as gsdb
+
 import check_ESR_by_RT as cesr_rt
 from core import run
 
@@ -31,7 +33,7 @@ from core import run
 logger.remove()
 logger.add(lambda msg: print(msg), level="ERROR", backtrace=True, diagnose=True)
 
-def main():
+async def main():
 
     try:
         # Чтобы дебажная печать dataframe влезала без скрытых значений
@@ -94,12 +96,7 @@ def main():
                     if (i[0] == j[1] and i[1] == j[13]) or (i[0] == j[3] and i[1] == j[13]):
                         cleared_df.drop(index=j[0], inplace=True)
 
-        # Подтягивается из БД дополнительная информация о станциях отправления/назначения, хранится в массиве данных
-        stations_meta = gsdb.GetAdditionalDataAboutStations(cleared_df)
-        # Если нужно временно отключить подтягивание из БД доп.данных, ничего не сломается, просто не будет доп.инфо.
-        # stations_meta_data = []
-
-        run(source_file, details_folder, sheet_name, cleared_df, stations_meta)
+        await run(source_file, details_folder, sheet_name, cleared_df)
 
     except Exception as e:
         logger.exception(e)
@@ -107,7 +104,7 @@ def main():
 
 @logger.catch(reraise=True)
 def go_main():
-    main()
+    asyncio.run(main())
 
 if __name__ == '__main__':
     go_main()

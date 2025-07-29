@@ -3,11 +3,12 @@ from pandas import concat
 from link_to_stations import url_to_stations_bd
 from tqdm import tqdm
 from loguru import logger
+from time import sleep
 
 # Блок для добавления территориальной информации про станции
 # На вход приходит датафрейм с кодами ЕСР станций, на выходе список ЕСР кодов
 @logger.catch(reraise=True)
-def GetAdditionalDataAboutStations(dataframe):
+async def GetAdditionalDataAboutStations(dataframe):
 
     # Создается датафрейм с отдельными столбцами из исходного файла.
     # Оставляются ЕСР станции отправления и наименование станции отправления
@@ -41,6 +42,8 @@ def GetAdditionalDataAboutStations(dataframe):
     del df_2
 
     stations_data = list()
+
+    # Забирается информация о станциях с сетевого ресурса
     st_data = requests.get(url_to_stations_bd)
 
     # Если не удалось соединиться с сервером, возвращается пустой список станций (это не критичные данные)
@@ -56,8 +59,8 @@ def GetAdditionalDataAboutStations(dataframe):
 
         # Цикл с количеством итераций, равным количеству элементов в общем списке станций из данных сервера (очень много).
         # Будем бежать по всему списку станций из сервера через итератор [i].
-        for i in tqdm(range(len(st_dict['rows']))):
-        # for i in range(len(st_dict['rows'])): если не нужно видеть прогресс tqdm
+        # for i in tqdm(range(len(st_dict['rows']))):
+        for i in range(len(st_dict['rows'])): #если не нужно видеть прогресс tqdm
 
             # Цикл с количеством итераций, равным количеству элементов в списке уникальных значений станций (из df_3)
             # Будем бежать по списку уникальных элементов - уникальных кодов станций, участвующих в расчёте тарифов.

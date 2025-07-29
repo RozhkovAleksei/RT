@@ -7,7 +7,7 @@ from externals import sleep_long, sleep_short, sleep_tic, sleep_moment
 from loguru import logger
 
 @logger.catch(reraise=True)
-def export_details_to_new_excels(det_folder, my_obj):
+async def export_details_to_new_excels(det_folder, my_obj):
 
     gl.SetRailTariffWindowActive()
 
