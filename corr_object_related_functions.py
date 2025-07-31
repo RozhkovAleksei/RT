@@ -65,9 +65,9 @@ class OneCorr(BaseModel):
     station_nazn_polygon:StrictStr = ''
 
     # Явное удаление объекта
-    def __del__(self):
-        import gc
-        gc.collect()
+    # def __del__(self):
+    #     import gc
+    #     gc.collect()
 
 # Инициализация переменных значениями из текущей строки датафрейма.
 # Можно вместо переменных сделать ассоциативный массив, но читаемость кода ухудшится.
