@@ -1,73 +1,75 @@
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, StrictStr
+from pydantic import BaseModel, ConfigDict, Strict
 from loguru import logger
+from typing import Annotated, Optional
 
 # Класс для создания общего объекта, который хранит в себе все результаты расчётов по i-й корреспонденции.
 # Класс создан для удобства обращения к полям при переходе выполнения программы из одного модуля - в другой.
 # Иных целей - инкапсуляции (с целью ограничить доступ к полям), наследования, полиморфизма, абстракции не имеет.
 class OneCorr(BaseModel):
 
-    model_config = ConfigDict(validate_assignment=True)
+    id: Optional[Annotated[int, Strict]] = 0
+    esr_otpr: Optional[Annotated[str, Strict]] = ""
+    station_otpr_name: Optional[Annotated[str, Strict]] = ""
+    esr_nazn: Optional[Annotated[str, Strict]] = ""
+    station_nazn_name: Optional[Annotated[str, Strict]] = ""
+    type_dispatch: Optional[Annotated[str, Strict]] = ""
+    is_container_train: Optional[Annotated[str, Strict]] = ""
+    etsng_cargo: Optional[Annotated[str, Strict]] = ""
+    mass_in_car: Optional[Annotated[str, Strict]] = ""
+    type_of_container: Optional[Annotated[str, Strict]] = ""
+    type_of_car: Optional[Annotated[str, Strict]] = ""
+    car_dead_weight: Optional[Annotated[str, Strict]] = ""
+    cars_amount_in_train: Optional[Annotated[str, Strict]] = ""
+    year_for_tariff: Optional[Annotated[str, Strict]] = ""
+    month_for_tariff: Optional[Annotated[str, Strict]] = ""
+    day_for_tariff: Optional[Annotated[str, Strict]] = ""
+    specific_van_for_coal_id: Optional[Annotated[str, Strict]] = ""
+    mainland_payment_by_loaded_carriage: Optional[Annotated[str, Strict]] = ""
+    mainland_payment_by_empty_carriage: Optional[Annotated[str, Strict]] = ""
+    mainland_payment_distance: Optional[Annotated[str, Strict]] = ""
+    sakhalin_payment_by_loaded_carriage: Optional[Annotated[str, Strict]] = ""
+    sakhalin_payment_by_empty_carriage: Optional[Annotated[str, Strict]] = ""
+    sakhalin_payment_distance: Optional[Annotated[str, Strict]] = ""
+    crimea_payment_by_loaded_carriage: Optional[Annotated[str, Strict]] = ""
+    crimea_payment_by_empty_carriage: Optional[Annotated[str, Strict]] = ""
+    crimea_payment_distance: Optional[Annotated[str, Strict]] = ""
+    kazakhstan_payment_by_loaded_carriage: Optional[Annotated[str, Strict]] = ""
+    kazakhstan_payment_by_empty_carriage: Optional[Annotated[str, Strict]] = ""
+    kazakhstan_payment_distance: Optional[Annotated[str, Strict]] = ""
+    litva_payment_by_loaded_carriage: Optional[Annotated[str, Strict]] = ""
+    litva_payment_by_empty_carriage: Optional[Annotated[str, Strict]] = ""
+    litva_payment_distance: Optional[Annotated[str, Strict]] = ""
+    belarus_payment_by_loaded_carriage: Optional[Annotated[str, Strict]] = ""
+    belarus_payment_by_empty_carriage: Optional[Annotated[str, Strict]] = ""
+    belarus_payment_distance: Optional[Annotated[str, Strict]] = ""
+    zhdn_payment_by_loaded_carriage: Optional[Annotated[str, Strict]] = ""
+    zhdn_payment_by_empty_carriage: Optional[Annotated[str, Strict]] = ""
+    zhdn_payment_distance: Optional[Annotated[str, Strict]] = ""
+    mainland_currency_of_result: Optional[Annotated[str, Strict]] = "RUB"
+    sakhalin_currency_of_result: Optional[Annotated[str, Strict]] = "RUB"
+    crimea_currency_of_result: Optional[Annotated[str, Strict]] = "RUB"
+    kazakhstan_currency_of_result: Optional[Annotated[str, Strict]] = "CHF"
+    litva_currency_of_result: Optional[Annotated[str, Strict]] = "CHF"
+    belarus_currency_of_result: Optional[Annotated[str, Strict]] = "CHF"
+    zhdn_currency_of_result: Optional[Annotated[str, Strict]] = "CHF"
+    date_calculation: Optional[Annotated[str, Strict]] = ""
+    ETSNG_to_avoid: Optional[Annotated[str, Strict]] = ""
+    station_otpr_name_in_system: Optional[Annotated[str, Strict]] = ""
+    station_nazn_name_in_system: Optional[Annotated[str, Strict]] = ""
+    station_otpr_subject_RF: Optional[Annotated[str, Strict]] = ""
+    station_otpr_region: Optional[Annotated[str, Strict]] = ""
+    station_otpr_polygon: Optional[Annotated[str, Strict]] = ""
+    station_nazn_subject_RF: Optional[Annotated[str, Strict]] = ""
+    station_nazn_region: Optional[Annotated[str, Strict]] = ""
+    station_nazn_polygon: Optional[Annotated[str, Strict]] = ""
 
-    esr_otpr:StrictStr = ""
-    station_otpr_name:StrictStr = ""
-    esr_nazn:StrictStr = ""
-    station_nazn_name:StrictStr = ""
-    type_dispatch:StrictStr = ""
-    is_container_train:StrictStr = ""
-    etsng_cargo:StrictStr = ""
-    mass_in_car:StrictStr = ""
-    type_of_container:StrictStr = ""
-    type_of_car:StrictStr = ""
-    car_dead_weight:StrictStr = ""
-    cars_amount_in_train:StrictStr = ""
-    year_for_tariff:StrictStr = ""
-    month_for_tariff:StrictStr = ""
-    day_for_tariff:StrictStr = ""
-    specific_van_for_coal_id: StrictStr = ' '
-    mainland_payment_by_loaded_carriage:StrictStr = ""
-    mainland_payment_by_empty_carriage:StrictStr = ""
-    mainland_payment_distance:StrictStr = ""
-    sakhalin_payment_by_loaded_carriage:StrictStr = ""
-    sakhalin_payment_by_empty_carriage:StrictStr = ""
-    sakhalin_payment_distance:StrictStr = ""
-    crimea_payment_by_loaded_carriage:StrictStr = ""
-    crimea_payment_by_empty_carriage:StrictStr = ""
-    crimea_payment_distance:StrictStr = ""
-    kazakhstan_payment_by_loaded_carriage:StrictStr = ""
-    kazakhstan_payment_by_empty_carriage:StrictStr = ""
-    kazakhstan_payment_distance:StrictStr = ""
-    litva_payment_by_loaded_carriage:StrictStr = ""
-    litva_payment_by_empty_carriage:StrictStr = ""
-    litva_payment_distance:StrictStr = ""
-    belarus_payment_by_loaded_carriage:StrictStr = ""
-    belarus_payment_by_empty_carriage:StrictStr = ""
-    belarus_payment_distance:StrictStr = ""
-    zhdn_payment_by_loaded_carriage:StrictStr = ""
-    zhdn_payment_by_empty_carriage:StrictStr = ""
-    zhdn_payment_distance:StrictStr = ""
-    mainland_currency_of_result:StrictStr = "RUB"
-    sakhalin_currency_of_result:StrictStr = "RUB"
-    crimea_currency_of_result:StrictStr = "RUB"
-    kazakhstan_currency_of_result:StrictStr = "CHF"
-    litva_currency_of_result:StrictStr = "CHF"
-    belarus_currency_of_result:StrictStr = "CHF"
-    zhdn_currency_of_result: StrictStr = "RUB"
-    date_calculation: StrictStr = ""
-    ETSNG_to_avoid: StrictStr = ''
-    station_otpr_name_in_system:StrictStr = ''
-    station_nazn_name_in_system: StrictStr = ''
-    station_otpr_subject_RF:StrictStr = ''
-    station_otpr_region:StrictStr = ''
-    station_otpr_polygon:StrictStr = ''
-    station_nazn_subject_RF:StrictStr = ''
-    station_nazn_region:StrictStr = ''
-    station_nazn_polygon:StrictStr = ''
+    model_config = ConfigDict(
+        from_attributes=True,           # вместо orm_mode=True
+        validate_assignment=True,       # валидация при изменении поля
+        str_strip_whitespace=True,      # убирать пробелы по краям
+        extra="forbid")                 # при наличии лишних полей (если они возьмутся откуда-то) будет ValidationError
 
-    # Явное удаление объекта
-    # def __del__(self):
-    #     import gc
-    #     gc.collect()
 
 # Инициализация переменных значениями из текущей строки датафрейма.
 # Можно вместо переменных сделать ассоциативный массив, но читаемость кода ухудшится.
@@ -138,4 +140,3 @@ def cur_state_print(cur_r, dataframe, mobj):
                 + mobj.station_nazn_polygon)
 
     print(log_data, sep=', ')
-

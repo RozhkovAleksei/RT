@@ -18,6 +18,7 @@ def create_table_if_not_exist_and_check_for_duplicates(dataframe:pd.DataFrame, d
         cursor.execute(f"""
             CREATE TABLE IF NOT EXISTS {db_table_name} 
             (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             esr_otpr TEXT,
             station_otpr_name TEXT,
             esr_nazn TEXT,
