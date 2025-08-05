@@ -2,8 +2,8 @@ import keyboard
 from time import sleep
 import py_win_keyboard_layout
 import pandas as pd
-import globals as gl
-from externals import sleep_short
+from RelatedFunctionsAndVariables import globals as gl
+from RelatedFunctionsAndVariables.externals import sleep_short
 from loguru import logger
 
 @logger.catch(reraise=True)

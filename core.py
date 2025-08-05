@@ -1,21 +1,14 @@
 from time import sleep, perf_counter
 from pyautogui import press, click
-import corr_object_related_functions as corf
-from externals import db_filename, table_name, sleep_long, sleep_short, sleep_tic
+from RelatedFunctionsAndVariables.externals import db_filename, table_name, sleep_long, sleep_short, sleep_tic
 from loguru import logger
 import asyncio
 
-import get_stations_data_by_DB as gsdb
-import s0_StartNewCalc as S0nc
-import s1_SetBeginEndStations as S1sbes
-import s2_SetTypeOfDispatch as S2std
-import s3_SetMassAndETSNG as S3sme
-import s4_SetCarriageSpecs as S4scs
-import s5_SetCarriageReturnOptions as S5sr
-import s6_GetResultsToClipboard as S6rtc
-import s7_ExportResultsToExcel as S7rte
-import s8_ExportDetailsToExcel as S8rte
-import s9_ExportResultsToDB as S9rtdb
+from RelatedFunctionsAndVariables import get_stations_data_by_DB as gsdb, corr_object_related_functions as corf
+from StepsRT import s0_StartNewCalc as S0nc, s1_SetBeginEndStations as S1sbes, s4_SetCarriageSpecs as S4scs, \
+    s5_SetCarriageReturnOptions as S5sr, s3_SetMassAndETSNG as S3sme, s2_SetTypeOfDispatch as S2std, \
+    s8_ExportDetailsToExcel as S8rte, s9_ExportResultsToDB as S9rtdb, s7_ExportResultsToExcel as S7rte, \
+    s6_GetResultsToClipboard as S6rtc
 
 
 @logger.catch(reraise=True)

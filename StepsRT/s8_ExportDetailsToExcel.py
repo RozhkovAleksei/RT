@@ -1,9 +1,9 @@
 import pandas as pd
 import pyautogui as pag
 from time import sleep
-import globals as gl
+from RelatedFunctionsAndVariables import globals as gl
 import py_win_keyboard_layout
-from externals import sleep_long, sleep_short, sleep_tic, sleep_moment
+from RelatedFunctionsAndVariables.externals import sleep_long, sleep_short, sleep_tic, sleep_moment
 from loguru import logger
 
 @logger.catch(reraise=True)

@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean, create_engine
+from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from externals import db_filename, table_name
+from RelatedFunctionsAndVariables.externals import db_filename, table_name
 
 sql_alchemy_db_url = "sqlite:///"+db_filename
 

@@ -1,9 +1,8 @@
 import pyautogui as pag
 from time import sleep
-import win32gui
 from loguru import  logger
-import globals as gl
-from externals import sleep_short, sleep_long
+from RelatedFunctionsAndVariables import globals as gl
+from RelatedFunctionsAndVariables.externals import sleep_short, sleep_long
 
 @logger.catch(reraise=True)
 def set_begin_end_stations(mobj):

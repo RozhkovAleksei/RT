@@ -7,7 +7,7 @@ from win32api import GetSystemMetrics
 import win32gui
 import pyscreeze
 from loguru import logger
-from externals import sleep_short, sleep_moment, sleep_long
+from RelatedFunctionsAndVariables.externals import sleep_short, sleep_moment, sleep_long
 
 
 # Функция для того, чтобы сделать активным окно программы RT

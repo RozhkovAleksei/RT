@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, Query
-from sql_alchemy_funcs import my_session_fabric, Corr
+from SQLFunctions.sql_alchemy_funcs import my_session_fabric, Corr
 from typing import List
 from sqlalchemy.orm import Session
 from corr_object_related_functions import OneCorr

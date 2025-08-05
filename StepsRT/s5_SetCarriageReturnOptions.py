@@ -1,7 +1,7 @@
 from time import sleep
 import pyautogui as pag
-import globals as gl
-from externals import sleep_short, sleep_long
+from RelatedFunctionsAndVariables import globals as gl
+from RelatedFunctionsAndVariables.externals import sleep_short, sleep_long
 from loguru import logger
 
 

@@ -1,8 +1,8 @@
 from pyautogui import press
 from time import sleep
 from loguru import logger
-import globals as gl
-from externals import sleep_short, sleep_long
+from RelatedFunctionsAndVariables import globals as gl
+from RelatedFunctionsAndVariables.externals import sleep_short, sleep_long
 
 @logger.catch(reraise=True)
 def set_type_of_dispatch(mobj):

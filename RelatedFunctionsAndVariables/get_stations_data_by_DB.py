@@ -1,9 +1,9 @@
 import requests
 from pandas import concat
-from link_to_stations import url_to_stations_bd
+from RelatedFunctionsAndVariables.link_to_stations import url_to_stations_bd
 from tqdm import tqdm
 from loguru import logger
-from time import sleep
+
 
 # Блок для добавления территориальной информации про станции
 # На вход приходит датафрейм с кодами ЕСР станций, на выходе список ЕСР кодов

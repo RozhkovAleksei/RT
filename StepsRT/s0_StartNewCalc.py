@@ -3,8 +3,8 @@ from keyboard import write
 from time import sleep
 from py_win_keyboard_layout import change_foreground_window_keyboard_layout
 from loguru import logger
-import globals as gl
-from externals import sleep_moment, sleep_long, sleep_short
+from RelatedFunctionsAndVariables import globals as gl
+from RelatedFunctionsAndVariables.externals import sleep_moment, sleep_long, sleep_short
 
 @logger.catch(reraise=True)
 def set_new_calculation(mobj):

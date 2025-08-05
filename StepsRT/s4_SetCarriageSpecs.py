@@ -2,8 +2,8 @@ from pandas import to_numeric
 import pyautogui as pag
 import keyboard
 from time import sleep
-import globals as gl
-from externals import sleep_short, sleep_long
+from RelatedFunctionsAndVariables import globals as gl
+from RelatedFunctionsAndVariables.externals import sleep_short, sleep_long
 from loguru import logger
 
 @logger.catch(reraise=True)

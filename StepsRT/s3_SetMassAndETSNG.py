@@ -1,10 +1,10 @@
 import pyautogui as pag
 import keyboard
 from time import sleep
-import globals as gl
+from RelatedFunctionsAndVariables import globals as gl
 import win32gui
 from loguru import logger
-from externals import sleep_short, sleep_long, min_search_time
+from RelatedFunctionsAndVariables.externals import sleep_short, sleep_long, min_search_time
 
 @logger.catch(reraise=True)
 def set_etsng_and_mass_in_car(mobj):

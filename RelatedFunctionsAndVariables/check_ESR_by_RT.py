@@ -1,13 +1,13 @@
 from win32gui import FindWindow
 from pandas import concat
-from globals import SetRailTariffWindowActive, SetRailTariffWindowActiveForInput
+from RelatedFunctionsAndVariables.globals import SetRailTariffWindowActive, SetRailTariffWindowActiveForInput
 from pyautogui import hotkey, press, typewrite, keyUp, keyDown
 from time import sleep
 from py_win_keyboard_layout import change_foreground_window_keyboard_layout
 from keyboard import write
 from tqdm import tqdm
 from loguru import logger
-from externals import sleep_moment, sleep_tic, sleep_long
+from RelatedFunctionsAndVariables.externals import sleep_moment, sleep_tic, sleep_long
 
 # Блок для проверки кода станции ЕСР на валидность.
 # Запускается отдельно, но можно интегрировать первым шагом, чтобы остановить выполнения расчётов, либо исключить

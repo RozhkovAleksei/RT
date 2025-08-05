@@ -1,5 +1,5 @@
 table_name = "corrs_and_data"
-db_filename = "corrs.db"
+db_filename = "../RT/corrs.db"
 sheet_name = "data"
 path_to_img_data = ''
 sleep_long: float = 0.5
