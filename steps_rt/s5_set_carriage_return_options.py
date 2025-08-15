@@ -1,8 +1,10 @@
 from time import sleep
+
 import pyautogui as pag
-from RelatedFunctionsAndVariables import globals as gl
-from RelatedFunctionsAndVariables.externals import sleep_short, sleep_long
 from loguru import logger
+
+from related_funcs_and_variables import globals as gl
+from related_funcs_and_variables.externals import sleep_long, sleep_short
 
 
 # Блок установки станции возврата вагона для расчета тарифа в порожнем рейсе
@@ -11,10 +13,9 @@ def set_car_return_option():
 
     gl.SetRailTariffWindowActiveForInput(8)
     sleep(sleep_short)
-    pag.press('down')
+    pag.press("down")
     sleep(sleep_short)
-    pag.press('space')
+    pag.press("space")
     sleep(sleep_short)
-    pag.press('enter')
+    pag.press("enter")
     sleep(sleep_long)
-

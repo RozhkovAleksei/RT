@@ -1,6 +1,7 @@
 # Personal data
 /corrs.db
-/RelatedFunctionsAndVariables/link_to_stations.py
+/related_funcs_and_variables/confidentials.py
+/related_funcs_and_variables/sensitive_data.py
 /RT-master.zip
 
 # Byte-compiled / optimized / DLL files

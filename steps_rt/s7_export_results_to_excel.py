@@ -1,6 +1,8 @@
 from datetime import datetime
-from pandas import ExcelWriter
+
 from loguru import logger
+from pandas import ExcelWriter
+
 
 @logger.catch(reraise=True)
 async def export_results_source_excel(df, cur_row, mobj, sheet_name, source_file):
@@ -64,7 +66,9 @@ async def export_results_source_excel(df, cur_row, mobj, sheet_name, source_file
 
     try:
         # выгрузка в Excel заполненного на данной итерации цикла датасета в папку проекта.
-        with ExcelWriter(source_file, mode="a", engine="openpyxl", if_sheet_exists="replace") as writer:
+        with ExcelWriter(
+            source_file, mode="a", engine="openpyxl", if_sheet_exists="replace"
+        ) as writer:
             df.to_excel(writer, sheet_name=str(sheet_name + "_result"))
     except Exception as e:
         print(e)

@@ -1,21 +1,42 @@
-from time import sleep, perf_counter
-from pyautogui import press, click
-from RelatedFunctionsAndVariables.externals import db_filename, table_name, sleep_long, sleep_short, sleep_tic
-from loguru import logger
-import asyncio
+"""Этот модуль запускает основное ядро расчётов, которое поочередно вызывает функции взаимодействия с RT."""
 
-from RelatedFunctionsAndVariables import get_stations_data_by_DB as gsdb, corr_object_related_functions as corf
-from StepsRT import s0_StartNewCalc as S0nc, s1_SetBeginEndStations as S1sbes, s4_SetCarriageSpecs as S4scs, \
-    s5_SetCarriageReturnOptions as S5sr, s3_SetMassAndETSNG as S3sme, s2_SetTypeOfDispatch as S2std, \
-    s8_ExportDetailsToExcel as S8rte, s9_ExportResultsToDB as S9rtdb, s7_ExportResultsToExcel as S7rte, \
-    s6_GetResultsToClipboard as S6rtc
+import asyncio
+from time import perf_counter, sleep
+
+from loguru import logger
+from pyautogui import click, press
+
+from related_funcs_and_variables import corr_object_related_functions as corf
+from related_funcs_and_variables import get_stations_data_by_DB as gsdb
+from related_funcs_and_variables.externals import (
+    db_filename,
+    sleep_long,
+    sleep_short,
+    sleep_tic,
+    table_name,
+)
+
+from related_funcs_and_variables.get_etran_data import send_xml_post_request
+
+from steps_rt import s0_start_new_calc as S0nc
+from steps_rt import s1_set_begin_end_stations as S1sbes
+from steps_rt import s2_set_type_of_dispatch as S2std
+from steps_rt import s3_set_mass_and_etsng as S3sme
+from steps_rt import s4_set_carriage_specs as S4scs
+from steps_rt import s5_set_carriage_return_options as S5sr
+from steps_rt import s6_get_results_to_clipboard as S6rtc
+from steps_rt import s7_export_results_to_excel as S7rte
+from steps_rt import s8_export_details_to_excels as S8rte
+from steps_rt import s9_export_results_to_db as S9rtdb
 
 
 @logger.catch(reraise=True)
 async def run(source_file, details_folder, sheet_name, df):
 
     # Подтягивается из БД дополнительная информация о станциях отправления/назначения, хранится в массиве данных
-    task_get_data_from_server = asyncio.create_task(gsdb.GetAdditionalDataAboutStations(df))
+    task_get_data_from_server = asyncio.create_task(
+        gsdb.get_additional_data_about_stations(df)
+    )
     # Передача управления event loop
     await asyncio.sleep(0)
 
@@ -67,16 +88,24 @@ async def run(source_file, details_folder, sheet_name, df):
             stations_meta_data = await task_get_data_from_server
             corf.fill_additional_stations_data_to_object(CurCorr, stations_meta_data)
 
-            task_write_res_excel = asyncio.create_task(S7rte.export_results_source_excel(df, cur_row, CurCorr, sheet_name, source_file))
+            task_write_res_excel = asyncio.create_task(
+                S7rte.export_results_source_excel(
+                    df, cur_row, CurCorr, sheet_name, source_file
+                )
+            )
             await asyncio.sleep(0)
             sleep(sleep_short)
 
-            task_write_dets_excel = asyncio.create_task(S8rte.export_details_to_new_excels(details_folder, CurCorr))
+            task_write_dets_excel = asyncio.create_task(
+                S8rte.export_details_to_new_excels(details_folder, CurCorr)
+            )
             await asyncio.sleep(0)
             sleep(sleep_tic)
 
             # Запись текущей корреспонденции с результатами расчета в БД
-            task_write_to_db = asyncio.create_task(S9rtdb.write_corr_result_to_db(CurCorr, db_filename, table_name))
+            task_write_to_db = asyncio.create_task(
+                S9rtdb.write_corr_result_to_db(CurCorr, db_filename, table_name)
+            )
             await asyncio.sleep(0)
             sleep(sleep_short)
 
@@ -85,16 +114,20 @@ async def run(source_file, details_folder, sheet_name, df):
             await task_write_res_excel
             await task_write_dets_excel
             await task_write_to_db
+
+            # АЛЬТЕРНАТИВНЫЙ СЦЕНАРИЙ: получение данных о тарифе
+            send_xml_post_request(CurCorr)
+
             del CurCorr
 
             # Окончание замера времени.
             end_t = perf_counter()
-            print('Done in', int(end_t - start_t), 'sec.')
+            print("Done in", int(end_t - start_t), "sec.")
 
         except Exception as exc:
             print(exc)
             sleep(sleep_long)
             click()
-            press('esc')
-            press('esc')
+            press("esc")
+            press("esc")
             continue

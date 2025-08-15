@@ -16,17 +16,23 @@
 # почти нигде невозможно на уровне программы (кода) получить подтверждение об успешности выполненного действия.
 # В связи с этим, фактически, программа работает на ожидании успешности выполняемых операций с заложенными подстраховками.
 
-from loguru import logger
 import asyncio
 
-from RelatedFunctionsAndVariables.externals import sheet_name, end_path_to_source_file, end_path_to_folder_for_detailed_data
-from RelatedFunctionsAndVariables.globals import SetDiskLabelByScreenRes
-from RelatedFunctionsAndVariables.source_file_funcs import dataframe_preps
+from loguru import logger
+
 from core import run
+from related_funcs_and_variables.externals import (
+    end_path_to_folder_for_detailed_data,
+    end_path_to_source_file,
+    sheet_name,
+)
+from related_funcs_and_variables.globals import SetDiskLabelByScreenRes
+from related_funcs_and_variables.source_file_funcs import dataframe_preps
 
 # Настройка логгера
 logger.remove()
 logger.add(lambda msg: print(msg), level="ERROR", backtrace=True, diagnose=True)
+
 
 async def main():
 
@@ -45,9 +51,11 @@ async def main():
         logger.exception(e)
         raise
 
+
 @logger.catch(reraise=True)
 def go_main():
     asyncio.run(main())
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     go_main()

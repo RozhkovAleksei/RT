@@ -1,8 +1,11 @@
-import pyautogui as pag
 from time import sleep
-from loguru import  logger
-from RelatedFunctionsAndVariables import globals as gl
-from RelatedFunctionsAndVariables.externals import sleep_short, sleep_long
+
+import pyautogui as pag
+from loguru import logger
+
+from related_funcs_and_variables import globals as gl
+from related_funcs_and_variables.externals import sleep_long, sleep_short
+
 
 @logger.catch(reraise=True)
 def set_begin_end_stations(mobj):
@@ -13,13 +16,13 @@ def set_begin_end_stations(mobj):
 
     sleep(sleep_short)
 
-    if mobj.esr_otpr == '#Н/Д':
+    if mobj.esr_otpr == "#Н/Д":
         gl.ExitByError()
     else:
         sleep(sleep_long)
         pag.typewrite(mobj.esr_otpr, interval=0.05)
         sleep(sleep_long)
-        pag.press('enter')
+        pag.press("enter")
         sleep(sleep_short)
         # wnd = win32gui.FindWindow(None, "Станция отправления")
         # if wnd != 0:
@@ -34,13 +37,13 @@ def set_begin_end_stations(mobj):
     sleep(sleep_short)
 
     # Вставляется код станции НАЗНАЧЕНИЯ, чтобы по фильтру ниже в окне появилось её название
-    if mobj.esr_nazn == '#Н/Д':
+    if mobj.esr_nazn == "#Н/Д":
         gl.ExitByError()
     else:
         sleep(sleep_long)
         pag.typewrite(mobj.esr_nazn, interval=0.05)
         sleep(sleep_long)
-        pag.press('enter')
+        pag.press("enter")
         sleep(sleep_short)
         # wnd = win32gui.FindWindow(None, "Станция назначения")
         # if wnd != 0:
@@ -49,4 +52,3 @@ def set_begin_end_stations(mobj):
         #     gl.ExitByError()
 
     sleep(sleep_short)
-

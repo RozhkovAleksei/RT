@@ -1,11 +1,14 @@
-import sqlite3
 import os
+import sqlite3
+
 import pandas as pd
 from loguru import logger
 
 
 @logger.catch(reraise=True)
-def create_table_if_not_exist_and_check_for_duplicates(dataframe:pd.DataFrame, db_file_name:str, db_table_name:str):
+def create_table_if_not_exist_and_check_for_duplicates(
+    dataframe: pd.DataFrame, db_file_name: str, db_table_name: str
+):
 
     # Проверка - если файла БД нет - то и проверять незачем. Предположение, что файл БД всегда только один.
     if not os.path.isfile(db_file_name):
@@ -15,7 +18,8 @@ def create_table_if_not_exist_and_check_for_duplicates(dataframe:pd.DataFrame, d
         cursor = connection.cursor()
 
         # Создание таблицы
-        cursor.execute(f"""
+        cursor.execute(
+            f"""
             CREATE TABLE IF NOT EXISTS {db_table_name} 
             (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,7 +77,8 @@ def create_table_if_not_exist_and_check_for_duplicates(dataframe:pd.DataFrame, d
             station_nazn_subject_RF TEXT,
             station_nazn_region TEXT,
             station_nazn_polygon TEXT)
-        """)
+        """
+        )
         connection.commit()
         connection.close()
 
@@ -84,7 +89,9 @@ def create_table_if_not_exist_and_check_for_duplicates(dataframe:pd.DataFrame, d
 
     for i in dataframe.itertuples():
 
-        index_of_duplicate = tuple("-1",)
+        index_of_duplicate = tuple(
+            "-1",
+        )
 
         try:
             with sqlite3.connect(db_file_name) as connection:
@@ -92,22 +99,61 @@ def create_table_if_not_exist_and_check_for_duplicates(dataframe:pd.DataFrame, d
                 # При наличии хотя бы одной дублирующейся корреспонденции - последним элементом возвращаемого кортежа
                 # будет None, надо предусмотреть обработку.
                 # [i, x] - i номер строки, x - номер столбца в dataframe.
-                index_of_duplicate=(
-                    connection.cursor().execute(
-                    'SELECT ROWID FROM ' + '"' + db_table_name + '"' +
-                    ' WHERE "esr_otpr" = ' + '"' + dataframe.iat[i[0], 0] + '"'
-                    + ' AND "station_otpr_name" = ' + '"' + dataframe.iat[i[0], 1] + '"'
-                    + ' AND "esr_nazn" = ' + '"' + dataframe.iat[i[0], 2] + '"'
-                    + ' AND "station_nazn_name" = ' + '"' + dataframe.iat[i[0], 3] + '"'
-                    + ' AND "type_dispatch" = ' + '"' + dataframe.iat[i[0], 4] + '"'
-                    + ' AND "etsng_cargo" = ' + '"' + dataframe.iat[i[0], 6] + '"'
-                    + ' AND "type_of_car" = ' + '"' + dataframe.iat[i[0], 9] + '"'
-                    + ' AND "year_for_tariff" = ' + '"' + dataframe.iat[i[0], 12] + '"'
-                    + ' AND "month_for_tariff" = ' + '"' + dataframe.iat[i[0], 13] + '"'
-                    + ' AND "day_for_tariff" = ' + '"' + dataframe.iat[i[0], 14] + '"').fetchone())
+                index_of_duplicate = (
+                    connection.cursor()
+                    .execute(
+                        "SELECT ROWID FROM "
+                        + '"'
+                        + db_table_name
+                        + '"'
+                        + ' WHERE "esr_otpr" = '
+                        + '"'
+                        + dataframe.iat[i[0], 0]
+                        + '"'
+                        + ' AND "station_otpr_name" = '
+                        + '"'
+                        + dataframe.iat[i[0], 1]
+                        + '"'
+                        + ' AND "esr_nazn" = '
+                        + '"'
+                        + dataframe.iat[i[0], 2]
+                        + '"'
+                        + ' AND "station_nazn_name" = '
+                        + '"'
+                        + dataframe.iat[i[0], 3]
+                        + '"'
+                        + ' AND "type_dispatch" = '
+                        + '"'
+                        + dataframe.iat[i[0], 4]
+                        + '"'
+                        + ' AND "etsng_cargo" = '
+                        + '"'
+                        + dataframe.iat[i[0], 6]
+                        + '"'
+                        + ' AND "type_of_car" = '
+                        + '"'
+                        + dataframe.iat[i[0], 9]
+                        + '"'
+                        + ' AND "year_for_tariff" = '
+                        + '"'
+                        + dataframe.iat[i[0], 12]
+                        + '"'
+                        + ' AND "month_for_tariff" = '
+                        + '"'
+                        + dataframe.iat[i[0], 13]
+                        + '"'
+                        + ' AND "day_for_tariff" = '
+                        + '"'
+                        + dataframe.iat[i[0], 14]
+                        + '"'
+                    )
+                    .fetchone()
+                )
 
         except sqlite3.Error as exp:
-            print("Ошибка получения данных для проверки на наличие среди имеющихся: ", exp)
+            print(
+                "Ошибка получения данных для проверки на наличие среди имеющихся: ", exp
+            )
 
         # -1, так как 0 может оказаться валидным значением
         if index_of_duplicate is None:
@@ -118,6 +164,7 @@ def create_table_if_not_exist_and_check_for_duplicates(dataframe:pd.DataFrame, d
     df_clear = dataframe.drop(index=df_indexes_of_duplicates)
 
     return df_clear
+
 
 # В итоге нигде не используется
 # def get_available_row_index_in_DB(db_file_name:str, db_table_name:str):
