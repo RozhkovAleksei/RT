@@ -6,7 +6,8 @@ from loguru import logger
 
 
 @logger.catch(reraise=True)
-async def write_corr_result_to_db(mo, db_filename, table_name):
+# async def write_corr_result_to_db(mo, db_filename, table_name):
+def write_corr_result_to_db(mo, db_filename, table_name):
     """Если первичный запуск и БД нет - создаётся пустая БД с таблицей"""
 
     with sqlite3.connect(db_filename) as connection:
@@ -82,7 +83,7 @@ async def write_corr_result_to_db(mo, db_filename, table_name):
                 f'INSERT INTO "{table_name}" ({quoted_fields}) VALUES ({placeholders})'
             )
 
-            print(query)
+            # print(query)
 
             values = [
                 mo.esr_otpr,
@@ -143,6 +144,9 @@ async def write_corr_result_to_db(mo, db_filename, table_name):
 
             cursor.execute(query, values)
             connection.commit()
+
+            # TODO: заменить запись в базу mo.date_calculation на str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+            # TODO: убрать ото всюду из выгрузок ETSNG_to_avoid, так как очистка плохих ЕСР проходит до расчетов
 
     except sqlite3.Error as exp:
         print("Ошибка при заполнении ячеек БД результатами расчёта:", exp)

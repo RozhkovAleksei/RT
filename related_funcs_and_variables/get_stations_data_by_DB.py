@@ -2,14 +2,17 @@ import requests
 from loguru import logger
 from pandas import concat
 from tqdm import tqdm
-
+from time import sleep
+import sqlite3
 from related_funcs_and_variables.confidentials import url_to_stations_bd
+from related_funcs_and_variables.externals import stations_meta_data_db, sleep_short, sleep_long
 
 
 # Блок для добавления территориальной информации про станции
 # На вход приходит датафрейм с кодами ЕСР станций, на выходе список ЕСР кодов
 @logger.catch(reraise=True)
-async def get_additional_data_about_stations(dataframe):
+# async def get_additional_data_about_stations(dataframe):
+def get_additional_data_about_stations(dataframe):
 
     # Создается датафрейм с отдельными столбцами из исходного файла.
     # Оставляются ЕСР станции отправления и наименование станции отправления
@@ -61,7 +64,7 @@ async def get_additional_data_about_stations(dataframe):
         # Цикл с количеством итераций, равным количеству элементов в общем списке станций из данных сервера (очень много).
         # Будем бежать по всему списку станций из сервера через итератор [i].
         for i in tqdm(range(len(st_dict["rows"]))):
-            # for i in range(len(st_dict['rows'])): #если не нужно видеть прогресс tqdm
+        # for i in range(len(st_dict['rows'])): #если не нужно видеть прогресс tqdm
 
             # Цикл с количеством итераций, равным количеству элементов в списке уникальных значений станций (из df_3)
             # Будем бежать по списку уникальных элементов - уникальных кодов станций, участвующих в расчёте тарифов.
@@ -70,6 +73,13 @@ async def get_additional_data_about_stations(dataframe):
                 # Если код ЕСР станции из df_3 равен коду станции в общем списке станций - добавляем в
                 # список нужную информацию по этой станции. ЕСР без последнего знака, т.к. его на сервере нет
                 if df_3.loc[j][0][:-1] == v[i]["stan_esr"]:
+
+                    # TODO: сделать выгрузку в БД и подцепить данные из БД!
+                    # with sqlite3.connect(stations_meta_data_db) as connection:
+                    #     cursor = connection.cursor()
+                    #     cursor.execute(
+                    #         'insert into "stations_metadata" ("stan_esr", "stan_name", "subject", "okrug", "poligon_short_name") values ()'
+                    #     )
 
                     stations_data.append(
                         [
@@ -83,6 +93,7 @@ async def get_additional_data_about_stations(dataframe):
 
     stations_data.sort(key=lambda x: x[0])
 
+    del v
     del df_3
     del st_data
     del st_dict

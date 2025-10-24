@@ -1,6 +1,6 @@
 """Этот модуль запускает основное ядро расчётов, которое поочередно вызывает функции взаимодействия с RT."""
 
-import asyncio
+# import asyncio
 from time import perf_counter, sleep
 
 from loguru import logger
@@ -15,6 +15,7 @@ from related_funcs_and_variables.externals import (
     sleep_tic,
     table_name,
 )
+from related_funcs_and_variables.globals import SetRailTariffWindowActiveFirstRun
 
 from related_funcs_and_variables.get_etran_data import send_xml_post_request
 
@@ -31,14 +32,18 @@ from steps_rt import s9_export_results_to_db as S9rtdb
 
 
 @logger.catch(reraise=True)
-async def run(source_file, details_folder, sheet_name, df):
+# async def run(source_file, details_folder, sheet_name, df):
+def run(source_file, details_folder, sheet_name, df):
 
     # Подтягивается из БД дополнительная информация о станциях отправления/назначения, хранится в массиве данных
-    task_get_data_from_server = asyncio.create_task(
-        gsdb.get_additional_data_about_stations(df)
-    )
-    # Передача управления event loop
-    await asyncio.sleep(0)
+    # task_get_data_from_server = asyncio.create_task(
+    #     gsdb.get_additional_data_about_stations(df)
+    # )
+    # # Передача управления event loop
+    # await asyncio.sleep(0)
+    stations_meta_data = gsdb.get_additional_data_about_stations(df)
+
+    sleep(sleep_short)
 
     # Запуск цикла, в рамках которого будет построчно считываться информация из датафрейма.
     for cur_row in range(len(df)):
@@ -63,6 +68,8 @@ async def run(source_file, details_folder, sheet_name, df):
             # В зависимости от скорости отработки окна интерфейса - установлены long, short задержки, они определены
             # опытным путём, поэтому в целях перестраховки ставится задержка с запасом.
 
+            SetRailTariffWindowActiveFirstRun()
+
             S0nc.set_new_calculation(CurCorr)
             sleep(sleep_long)
 
@@ -85,38 +92,45 @@ async def run(source_file, details_folder, sheet_name, df):
             sleep(sleep_short)
 
             # Добавление дополнительных данных о станциях в поля объекта для унификации выгрузки в Excel и ДБ
-            stations_meta_data = await task_get_data_from_server
+            # stations_meta_data = await task_get_data_from_server
             corf.fill_additional_stations_data_to_object(CurCorr, stations_meta_data)
 
-            task_write_res_excel = asyncio.create_task(
-                S7rte.export_results_source_excel(
-                    df, cur_row, CurCorr, sheet_name, source_file
-                )
-            )
-            await asyncio.sleep(0)
+            # task_write_res_excel = asyncio.create_task(
+            #     S7rte.export_results_source_excel(
+            #         df, cur_row, CurCorr, sheet_name, source_file
+            #     )
+            # )
+            # await asyncio.sleep(0)
+
+            S7rte.export_results_source_excel(df, cur_row, CurCorr, sheet_name, source_file)
             sleep(sleep_short)
 
-            task_write_dets_excel = asyncio.create_task(
-                S8rte.export_details_to_new_excels(details_folder, CurCorr)
-            )
-            await asyncio.sleep(0)
+            # task_write_dets_excel = asyncio.create_task(
+            #     S8rte.export_details_to_new_excels(details_folder, CurCorr)
+            # )
+            # await asyncio.sleep(0)
+
+            S8rte.export_details_to_new_excels(details_folder, CurCorr)
             sleep(sleep_tic)
 
             # Запись текущей корреспонденции с результатами расчета в БД
-            task_write_to_db = asyncio.create_task(
-                S9rtdb.write_corr_result_to_db(CurCorr, db_filename, table_name)
-            )
-            await asyncio.sleep(0)
+            # task_write_to_db = asyncio.create_task(
+            #     S9rtdb.write_corr_result_to_db(CurCorr, db_filename, table_name)
+            # )
+            S9rtdb.write_corr_result_to_db(CurCorr, db_filename, table_name)
+
+            # await asyncio.sleep(0)
             sleep(sleep_short)
 
             # Ожидание исполнения асинхронных функций.
             # Удаляется объект. Нужно, чтобы гарантированно избежать данных с предыдущей итерации. Перестраховка.
-            await task_write_res_excel
-            await task_write_dets_excel
-            await task_write_to_db
+            # await task_write_res_excel
+            # await task_write_dets_excel
+            # await task_write_to_db
 
             # АЛЬТЕРНАТИВНЫЙ СЦЕНАРИЙ: получение данных о тарифе
-            send_xml_post_request(CurCorr)
+            # send_xml_post_request(CurCorr)
+            # TODO: придумать кейс для использования
 
             del CurCorr
 

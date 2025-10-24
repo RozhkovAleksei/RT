@@ -18,6 +18,7 @@ def set_new_calculation(mobj):
     sleep(sleep_short)
 
     gl.SetRailTariffWindowActive()
+
     sleep(sleep_short)
 
     # Команда для выполнения нового расчета в программе RT

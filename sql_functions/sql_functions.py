@@ -160,6 +160,7 @@ def create_table_if_not_exist_and_check_for_duplicates(
             continue
         if index_of_duplicate[0] != -1:
             df_indexes_of_duplicates.append(i[0])
+            # print(dataframe.loc[df_indexes_of_duplicates[-1]])
 
     df_clear = dataframe.drop(index=df_indexes_of_duplicates)
 

@@ -6,6 +6,7 @@ from loguru import logger
 from related_funcs_and_variables import globals as gl
 from related_funcs_and_variables.externals import sleep_long, sleep_short
 
+pag.FAILSAFE = False
 
 # Блок установки станции возврата вагона для расчета тарифа в порожнем рейсе
 @logger.catch(reraise=True)

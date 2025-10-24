@@ -5,7 +5,8 @@ from pandas import ExcelWriter
 
 
 @logger.catch(reraise=True)
-async def export_results_source_excel(df, cur_row, mobj, sheet_name, source_file):
+# async def export_results_source_excel(df, cur_row, mobj, sheet_name, source_file):
+def export_results_source_excel(df, cur_row, mobj, sheet_name, source_file):
     # Заполнение текущей строки датафрейма результатами расчета текущей итерации.
     # cur_row номер строки в датафрейме для позиционирования в файле Excel, 16,17 и тд. - столбец в excel-файле
 

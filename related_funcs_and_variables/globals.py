@@ -1,6 +1,6 @@
 import sys
 from time import sleep
-
+import traceback
 import pyscreeze
 import win32gui
 from loguru import logger
@@ -11,6 +11,42 @@ from win32api import GetSystemMetrics
 
 from related_funcs_and_variables.externals import sleep_long, sleep_moment, sleep_short
 
+import win32gui
+import win32con
+import time
+import sys
+
+
+
+# Функция для того, чтобы сделать активным окно программы RT
+@logger.catch(reraise=True)
+def SetRailTariffWindowActiveFirstRun():
+    # Переключается раскладка на английскую независимо от текущей, нужно для ввода с клавиатуры
+    change_foreground_window_keyboard_layout(0x04090409)
+
+    sleep(sleep_long)
+
+    try:
+        rail_tariff_window = getWindowsWithTitle("Новый расчёт - R-Тариф")[0]
+
+        sleep(sleep_long)
+
+        rail_tariff_window.minimize()
+
+        sleep(sleep_long)
+
+        rail_tariff_window.restore()
+
+        sleep(sleep_long)
+
+        # if rail_tariff_window.isActive is not True:
+        #     rail_tariff_window.activate()
+        #     sleep(sleep_long)
+    except:
+        print(SetRailTariffWindowActive.__name__, " проблема - не найдено окно R-Тариф")
+        sys.exit()
+
+
 
 # Функция для того, чтобы сделать активным окно программы RT
 @logger.catch(reraise=True)
@@ -18,11 +54,17 @@ def SetRailTariffWindowActive():
     # Переключается раскладка на английскую независимо от текущей, нужно для ввода с клавиатуры
     change_foreground_window_keyboard_layout(0x04090409)
 
-    sleep(sleep_moment)
+    sleep(sleep_short)
 
     try:
         rail_tariff_window = getWindowsWithTitle("Новый расчёт - R-Тариф")[0]
-        sleep(sleep_long)
+
+        sleep(sleep_short)
+
+        rail_tariff_window.activate()
+
+        sleep(sleep_short)
+
         if rail_tariff_window.isActive is not True:
             rail_tariff_window.activate()
             sleep(sleep_long)
@@ -35,7 +77,7 @@ def SetRailTariffWindowActive():
 @logger.catch(reraise=True)
 def SetRailTariffWindowActiveForInput(hotkey_number):
 
-    sleep(sleep_moment)
+    sleep(sleep_short)
 
     try:
         SetRailTariffWindowActive()

@@ -30,12 +30,14 @@ def get_results_to_clipboard_and_fill_object(mobj):
 
     # Считывание и очищение буфера обмена - вставка в новый dataframe
     df_tmp = pd.read_clipboard(dtype=str)
+
+
     sleep(sleep_short)
 
     df_tmp.rename(columns={" ": "Напр."}, inplace=True)
     sleep(sleep_short)
 
-    # print(df_tmp)
+    print(df_tmp)
 
     # Парсинг dataframe для заполнения полей атрибутов класса результатами расчёта i-й корреспонденции
     for index, row in df_tmp.iterrows():

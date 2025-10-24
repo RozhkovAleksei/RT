@@ -8,6 +8,7 @@ from pandas import to_numeric
 from related_funcs_and_variables import globals as gl
 from related_funcs_and_variables.externals import sleep_long, sleep_short
 
+pag.FAILSAFE = False
 
 @logger.catch(reraise=True)
 def set_car_type_capacity_amount_in_group(mobj):
@@ -19,10 +20,22 @@ def set_car_type_capacity_amount_in_group(mobj):
     # Предположительно - курсор уже будет стоять в поле, где надо ввести тип контейнера.
     if mobj.type_dispatch.lower() == "к":
         keyboard.write(mobj.type_of_container)
-        sleep(sleep_long)
-        pag.press("tab")
+        # sleep(sleep_long)
+        # pag.press("tab")
+        # sleep(sleep_short)
+        # pag.press("tab")
+
         sleep(sleep_short)
-        pag.press("tab")
+        pag.hotkey("shift","tab")
+        sleep(sleep_short)
+        pag.hotkey("shift","tab")
+        sleep(sleep_short)
+        pag.hotkey("shift","tab")
+        sleep(sleep_short)
+        pag.hotkey("shift","tab")
+        sleep(sleep_short)
+        pag.hotkey("shift","tab")
+
         sleep(sleep_long)
         pag.press("space")
         sleep(sleep_long)

@@ -114,34 +114,18 @@ def fill_additional_stations_data_to_object(mobj, stations_meta_data):
         # Ищется сравнение по неполному коду ЕСР, так как в НСИ последний (шестой) знак кода ЕСР не используется
         if mobj.esr_otpr[:-1] == str(station_data[0]):
 
-            mobj.station_otpr_name_in_system = station_data[
-                1
-            ]  # Наименование станции отправления в системах
-            mobj.station_otpr_subject_RF = station_data[
-                2
-            ]  # Принадлежность станции отправления к субъекту РФ
-            mobj.station_otpr_region = station_data[
-                3
-            ]  # Принадлежность станции отправления к федеральному округу
-            mobj.station_otpr_polygon = station_data[
-                4
-            ]  # Принадлежность станции отправления к полигону
+            mobj.station_otpr_name_in_system = station_data[1]  # Наименование станции отправления в системах
+            mobj.station_otpr_subject_RF = station_data[2]  # Принадлежность станции отправления к субъекту РФ
+            mobj.station_otpr_region = station_data[3]  # Принадлежность станции отправления к федеральному округу
+            mobj.station_otpr_polygon = station_data[4]  # Принадлежность станции отправления к полигону
 
         # Ищется сравнение по неполному коду ЕСР, так как в НСИ последний (шестой) знак кода ЕСР не используется
         if mobj.esr_nazn[:-1] == str(station_data[0]):
 
-            mobj.station_nazn_name_in_system = station_data[
-                1
-            ]  # Наименование станции назначения в системах
-            mobj.station_nazn_subject_RF = station_data[
-                2
-            ]  # Принадлежность станции назначения к субъекту РФ
-            mobj.station_nazn_region = station_data[
-                3
-            ]  # Принадлежность станции назначения к федеральному округу
-            mobj.station_nazn_polygon = station_data[
-                4
-            ]  # Принадлежность станции назначения к полигону
+            mobj.station_nazn_name_in_system = station_data[1]  # Наименование станции назначения в системах
+            mobj.station_nazn_subject_RF = station_data[2]  # Принадлежность станции назначения к субъекту РФ
+            mobj.station_nazn_region = station_data[3]  # Принадлежность станции назначения к федеральному округу
+            mobj.station_nazn_polygon = station_data[4]  # Принадлежность станции назначения к полигону
 
 
 # Инфо вывод текущей корреспонденции с её параметрами
@@ -155,13 +139,17 @@ def cur_state_print(cur_r, dataframe, mobj):
         + "/"
         + str(len(dataframe.index))
         + " "
+        + dataframe.iloc[cur_r]["esr_otpr"]
+        + "-"
         + dataframe.iloc[cur_r]["station_otpr_name"]
+        + "-"
+        + dataframe.iloc[cur_r]["esr_nazn"]
         + "-"
         + dataframe.iloc[cur_r]["station_nazn_name"]
         + ", ТипОтпр - "
         + dataframe.iloc[cur_r]["type_dispatch"]
         + ", КонтПоезд (0/1)-"
-        + dataframe.iloc[cur_r]["is_container_train"]
+        + dataframe.iloc[cur_r]["is_container_train"] + "\n"
         + ", ЕТСНГ-"
         + dataframe.iloc[cur_r]["etsng_cargo"]
         + ", Масса в вагоне-"
@@ -169,7 +157,7 @@ def cur_state_print(cur_r, dataframe, mobj):
         + ", ТипКонт-"
         + dataframe.iloc[cur_r]["type_of_container"]
         + ", РодПС-"
-        + dataframe.iloc[cur_r]["type_of_car"]
+        + dataframe.iloc[cur_r]["type_of_car"] + "\n"
         + ", Статн.-"
         + dataframe.iloc[cur_r]["car_dead_weight"]
         + ", Кол-воВагонов-"
@@ -182,22 +170,23 @@ def cur_state_print(cur_r, dataframe, mobj):
         + mobj.day_for_tariff
         + ", СпецПВ-"
         + dataframe.iloc[cur_r]["specific_van_for_coal_id"]
-        + ", СтОтпр SysName-"
-        + mobj.station_otpr_name_in_system
-        + ", СтОтпр Субъект РФ-"
-        + mobj.station_otpr_subject_RF
-        + ", СтОтпр Регион-"
-        + mobj.station_otpr_region
-        + ", СтОтпр Полигон-"
-        + mobj.station_otpr_polygon
-        + ", СтНазн SysName-"
-        + mobj.station_nazn_name_in_system
-        + ", СтНазн Субъект РФ-"
-        + mobj.station_nazn_subject_RF
-        + ", СтНазн Регион-"
-        + mobj.station_nazn_region
-        + ", СтНазн Полигон-"
-        + mobj.station_nazn_polygon
+        # В текущей конфигурации данные поля ещё не заполнены
+        # + ", СтОтпр SysName-"
+        # + mobj.station_otpr_name_in_system
+        # + ", СтОтпр Субъект РФ-"
+        # + mobj.station_otpr_subject_RF
+        # + ", СтОтпр Регион-"
+        # + mobj.station_otpr_region
+        # + ", СтОтпр Полигон-"
+        # + mobj.station_otpr_polygon
+        # + ", СтНазн SysName-"
+        # + mobj.station_nazn_name_in_system
+        # + ", СтНазн Субъект РФ-"
+        # + mobj.station_nazn_subject_RF
+        # + ", СтНазн Регион-"
+        # + mobj.station_nazn_region
+        # + ", СтНазн Полигон-"
+        # + mobj.station_nazn_polygon
     )
 
     print(log_data, sep=", ")

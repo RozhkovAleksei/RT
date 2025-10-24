@@ -13,9 +13,11 @@ from related_funcs_and_variables.externals import (
     sleep_tic,
 )
 
+pag.FAILSAFE = False
 
 @logger.catch(reraise=True)
-async def export_details_to_new_excels(det_folder, my_obj):
+# async def export_details_to_new_excels(det_folder, my_obj):
+def export_details_to_new_excels(det_folder, my_obj):
     """Функция выгружает детализированные данные в отдельные файлы"""
 
     gl.SetRailTariffWindowActive()
@@ -52,10 +54,10 @@ async def export_details_to_new_excels(det_folder, my_obj):
     pag.press("up")
     sleep(sleep_short)
     pag.press("right")
-    sleep(sleep_short)
-    pag.press("right")
-    sleep(sleep_short)
-    pag.press("right")
+    # sleep(sleep_short)
+    # pag.press("right")
+    # sleep(sleep_short)
+    # pag.press("right")
     sleep(sleep_long)
     pag.press("down")
     sleep(sleep_long)

@@ -9,9 +9,11 @@ from related_funcs_and_variables import globals as gl
 from related_funcs_and_variables.externals import (
     min_search_time,
     sleep_long,
-    sleep_short,
+    sleep_short, sleep_tic
 )
+from related_funcs_and_variables.etsng_change import check_if_bad_etsng
 
+pag.FAILSAFE = False
 
 @logger.catch(reraise=True)
 def set_etsng_and_mass_in_car(mobj):
@@ -52,10 +54,23 @@ def set_etsng_and_mass_in_car(mobj):
                     # Если местоположение изображения нашлось - выходим из цикла
                     # print("Местоположение gng_code_set найдено по координатам:", gng_code_set)
                     gl.SetRailTariffWindowActive()
-                    pag.hotkey("shift", "tab")
-                    sleep(sleep_short)
-                    # pag.hotkey('shift', 'tab')
+
+                    pag.press("tab")
+                    sleep(sleep_tic)
+                    pag.press("tab")
+                    sleep(sleep_tic)
+                    pag.press("tab")
+                    sleep(sleep_tic)
+                    pag.press("tab")
+                    sleep(sleep_tic)
+                    pag.press("tab")
+                    sleep(sleep_tic)
+                    pag.press("tab")
+                    sleep(sleep_tic)
+
+                    # pag.hotkey("shift", "tab")
                     # sleep(sleep_short)
+
                     pag.press("left")
                     sleep(sleep_short)
                     pag.press("space")
@@ -116,7 +131,8 @@ def set_etsng_and_mass_in_car(mobj):
     # Вставляется код ЕТСНГ груза, чтобы по фильтру ниже в окне появилось её название
     # На всякий случай активируется окно
     gl.SetRailTariffWindowActive()
-    keyboard.write(mobj.etsng_cargo, delay=0.01)
+    # Из-за возможного подвисания окна Р-Тарифа вследствие подбора под ЕТСНГ большого количества ГНГ - меняем ЕТСНГ
+    keyboard.write(check_if_bad_etsng(mobj.etsng_cargo), delay=0.01)
     sleep(sleep_long)
 
     # Проходим по окну до поля ввода массы груза в вагоне
@@ -124,7 +140,7 @@ def set_etsng_and_mass_in_car(mobj):
         sleep(sleep_long)
         pag.press("tab")
     sleep(sleep_short)
-    keyboard.write(mobj.mass_in_car, delay=0.01)
+    keyboard.write(mobj.mass_in_car, delay=0.001)
     sleep(sleep_short)
 
     # Нажимаем Enter для ввода параметров. Если что-то не так - всплывёт окно
@@ -136,6 +152,7 @@ def set_etsng_and_mass_in_car(mobj):
     # Проверяем, что всплывает неименованное окно с предупреждением о необходимости выбора кода ГНГ
     if (
         win32gui.GetForegroundWindow() != 0
+
         and win32gui.GetWindowText(win32gui.GetForegroundWindow()) == " "
     ):
         # print("Появилось неименованное окно о выборе кода ГНГ")

@@ -1,5 +1,5 @@
 from time import sleep
-
+import sqlite3
 from keyboard import write
 from loguru import logger
 from pandas import concat
@@ -8,20 +8,21 @@ from pyautogui import hotkey, keyDown, keyUp, press, typewrite
 from tqdm import tqdm
 from win32gui import FindWindow
 
-from related_funcs_and_variables.externals import sleep_long, sleep_moment, sleep_tic
+from related_funcs_and_variables.externals import sleep_long, sleep_moment, sleep_tic, bad_esr_and_year_db
 from related_funcs_and_variables.globals import (
     SetRailTariffWindowActive,
     SetRailTariffWindowActiveForInput,
 )
 
-# Блок для проверки кода станции ЕСР на валидность.
-# Запускается отдельно, но можно интегрировать первым шагом, чтобы остановить выполнения расчётов, либо исключить
-# корреспонденции, по которым есть проблема с валидностью ЕСР (отправление / назначение).
-# Проверка выполняется путём ввода кода станции в окно R-Тарифа, т.е., фактически - найдёт ли он её.
-
 
 @logger.catch(reraise=True)
 def run_check(df):
+    """
+    Блок для проверки кода станции ЕСР на валидность.
+    Запускается отдельно, но можно интегрировать первым шагом, чтобы остановить выполнения расчётов, либо исключить
+    корреспонденции, по которым есть проблема с валидностью ЕСР (отправление / назначение).
+    Проверка выполняется путём ввода кода станции в окно R-Тарифа, т.е., фактически - найдёт ли он её.
+    """
 
     # Создается датафрейм с выделенными столбцами из исходного файла. Столбцы с датой также нужны для объединения.
     df_1 = df[["esr_otpr", "year_for_tariff", "month_for_tariff", "day_for_tariff"]]
@@ -43,6 +44,15 @@ def run_check(df):
     problem_esr = {}
 
     for i in tqdm(range(0, df_3.shape[0])):
+
+        # TODO: доделать проверку наличия плохих кодов ЕСР в базе с плохими кодами ЕСР
+        # with sqlite3.connect(bad_esr_and_year_db) as connection:
+        #     cursor = connection.cursor()
+        #
+        #     query = "SELECT * FROM " + '"avoid_esr"' + " WHERE " + '"esr"= ' + "'" + str(df_3["esr_otpr"][i]) + "'" + " and " + '"year = "' + "'" + str(df_3["year_for_tariff"][i]) + "'"
+        #
+        #     cursor.execute(query)
+        #     result = cursor.fetchone() или fetchall() надо проверять
 
         # Активируется окно RT
         SetRailTariffWindowActive()

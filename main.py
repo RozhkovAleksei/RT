@@ -13,10 +13,10 @@
 # Созданы отдельные модули, различающиеся по взаимодействию с RT.
 # Запуск цикла по длине датафрейма, в котором на каждой итерации осуществляется по-очередный вызов модулей.
 # Ключевая сложность заключается в том, что по основным операциям, связанным с взаимодействием с окном программы RT
-# почти нигде невозможно на уровне программы (кода) получить подтверждение об успешности выполненного действия.
+# почти ни где невозможно на уровне программы (кода) получить подтверждение об успешности выполненного действия.
 # В связи с этим, фактически, программа работает на ожидании успешности выполняемых операций с заложенными подстраховками.
 
-import asyncio
+# import asyncio
 
 from loguru import logger
 
@@ -34,8 +34,8 @@ logger.remove()
 logger.add(lambda msg: print(msg), level="ERROR", backtrace=True, diagnose=True)
 
 
-async def main():
-
+# async def main():
+def main():
     # Адрес файла с корреспонденциями.
     source_file = SetDiskLabelByScreenRes() + end_path_to_source_file
     details_folder = SetDiskLabelByScreenRes() + end_path_to_folder_for_detailed_data
@@ -45,7 +45,8 @@ async def main():
         # Подготовка датафрейма для дальнейшей работы, чистка от дублирующихся кодов, коррекция точка-запятая
         cleared_df = dataframe_preps(source_file)
 
-        await run(source_file, details_folder, sheet_name, cleared_df)
+        # await run(source_file, details_folder, sheet_name, cleared_df)
+        run(source_file, details_folder, sheet_name, cleared_df)
 
     except Exception as e:
         logger.exception(e)
@@ -54,7 +55,8 @@ async def main():
 
 @logger.catch(reraise=True)
 def go_main():
-    asyncio.run(main())
+    # asyncio.run(main())
+    main()
 
 
 if __name__ == "__main__":
